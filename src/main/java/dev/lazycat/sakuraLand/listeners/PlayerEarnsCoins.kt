@@ -1,24 +1,18 @@
 package dev.lazycat.sakuraLand.listeners
 
 import dev.lazycat.sakuraLand.SakuraLand
-import dev.lazycat.sakuraLand.currency.coins.Coins
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.attribute.Attribute
-import org.bukkit.damage.DamageSource
-import org.bukkit.entity.Chicken
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.entity.Projectile
-import org.bukkit.entity.Villager
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import kotlin.math.sqrt
 
-class PlayerEarnCoins(val plugin: SakuraLand) : Listener {
+class PlayerEarnsCoins(val plugin: SakuraLand) : Listener {
     private val mm: MiniMessage = MiniMessage.miniMessage()
     private val blacklistedEntities = setOf(
         EntityType.PLAYER,
@@ -55,27 +49,23 @@ class PlayerEarnCoins(val plugin: SakuraLand) : Listener {
 
     @EventHandler
     fun onEntityDeath(event: EntityDeathEvent) {
-        val deadEntity: LivingEntity = event.entity as? LivingEntity ?: return
-        val damageEvent: EntityDamageEvent? = deadEntity.lastDamageCause
-
-        val player: Player = when (val damageSource: DamageSource = damageEvent!!.damageSource) {
-            is Player -> damageSource
-            is Projectile -> damageSource.shooter as? Player
-            else -> null
-        } ?: return
+        val deadEntity: LivingEntity = event.entity
 
         if (deadEntity.type in blacklistedEntities) return
+
+        val player: Player = deadEntity.killer ?: return
+
         val maxHealth = deadEntity.getAttribute(Attribute.MAX_HEALTH)?.value ?: 20.0
-        val droppedExp = event.droppedExp
+        val droppedExp = event.droppedExp.toDouble()
 
-        val rawCoins = (sqrt(droppedExp.toDouble()) * 9.3) + (maxHealth / 10.0) - 11.0
-
+        val rawCoins = (sqrt(droppedExp) * 9.3) + (maxHealth / 10.0) - 11.0
         val secretValue: Int = rawCoins.toInt().coerceIn(1, 1024)
 
         plugin.coinsInstance.add(player, secretValue)
+
         player.sendMessage(mm.deserialize(
             "<gold>Начислено <white><coins></white> монет за убийство <white><mob></white>",
-            Placeholder.parsed("coins" ,secretValue.toString()),
+            Placeholder.parsed("coins", secretValue.toString()),
             Placeholder.parsed("mob", deadEntity.name)
         ))
     }

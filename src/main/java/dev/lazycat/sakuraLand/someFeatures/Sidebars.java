@@ -1,4 +1,4 @@
-package dev.lazycat.sakuraLand.scoreboard;
+package dev.lazycat.sakuraLand.someFeatures;
 
 
 import dev.lazycat.sakuraLand.SakuraLand;
@@ -17,6 +17,12 @@ import org.bukkit.persistence.PersistentDataContainer;
 import static dev.lazycat.sakuraLand.origins.OriginsCore.playerOrigin;
 
 public class Sidebars {
+    /**
+     * Сайдбоард с информацией о вашем состоянии
+     * @param board досочка
+     * @param plugin ссылка на плагин
+     * @apiNote используется FastBoard
+     */
     public static void updateBoard(FastBoard board, SakuraLand plugin) {
         Player player = board.getPlayer();
         MiniMessage mm = MiniMessage.miniMessage();

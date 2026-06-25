@@ -1,8 +1,38 @@
 name: SakuraLand
-version: '1.0-SNAP1'
+version: '${project.version}'
 main: dev.lazycat.sakuraLand.SakuraLand
 api-version: '1.21'
-prefix: SKLand
+prefix: SK
 load: STARTUP
 authors: [ LazyCato0o ]
 description: features for sakuraland
+permissions:
+  skland.coins:
+    default: op
+    description: Позволяет управлять монетами у игрока
+  skland.sparks:
+    default: op
+    description: Позволяет управлять искрами у игрока
+  skland.origins:
+    description: Позволяет управлять рассами а также получать список рас
+    default: op
+commands:
+  coins:
+    usage: /coins <waste/add/set> <player> <value>
+    permission: skland.coins
+  sparks:
+    usage: /coins <waste/add/set> <player> <value>
+    permission: skland.sparks
+  forward:
+    usage: /forward <coins/sparks> <player> <value>
+
+  origin:
+    usage: /<command> <list/set> <player_name> <origin_id>
+    permission: op
+
+  cast-z:
+    usage: /<command>
+  cast-x:
+    usage: /<command>
+  cast-c:
+    usage: /<command>
