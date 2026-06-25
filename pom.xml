@@ -6,7 +6,7 @@
 
     <groupId>dev.lazycat</groupId>
     <artifactId>sakuraland</artifactId>
-    <version>1.1-SNAP4</version>
+    <version>1.1-SNAP5</version>
     <packaging>jar</packaging>
 
     <name>sakuraland</name>
@@ -20,6 +20,7 @@
     <build>
         <defaultGoal>package</defaultGoal>
         <plugins>
+
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>

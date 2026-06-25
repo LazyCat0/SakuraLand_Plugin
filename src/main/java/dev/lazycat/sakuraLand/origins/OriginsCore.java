@@ -40,6 +40,7 @@ public class OriginsCore {
         OriginsRegistry.register(new CreeperOrigin("creeper", "Крипер", plugin));
         OriginsRegistry.register(new WardenOrigin("warden", "Варден"));
         OriginsRegistry.register(new EndermanOrigin("enderman", "Эндермен"));
+        OriginsRegistry.register(new WitherOrigin("wither", "Чумной доктор", plugin));
     }
     /**
      * Активация эффектов рас
