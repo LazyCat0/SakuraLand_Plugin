@@ -13,6 +13,7 @@ import dev.lazycat.sakuraLand.origins.OriginsCore;
 import dev.lazycat.sakuraLand.origins.OriginsRegistry;
 import dev.lazycat.sakuraLand.origins.OriginsUtils;
 import dev.lazycat.sakuraLand.origins.originsListeners.IfritDamageEventListener;
+import dev.lazycat.sakuraLand.origins.originsListeners.WitherOriginListener;
 import dev.lazycat.sakuraLand.someFeatures.Sidebars;
 import fr.mrmicky.fastboard.adventure.FastBoard;
 import org.bukkit.Bukkit;
@@ -43,6 +44,7 @@ public class SakuraLand extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinAndQuit(this), this);
         getServer().getPluginManager().registerEvents(new PlayerEarnsCoins(this), this);
         getServer().getPluginManager().registerEvents(new IfritDamageEventListener(this), this);
+        getServer().getPluginManager().registerEvents(new WitherOriginListener(), this);
         this.initCommands();
 
         for (Origin origin : OriginsRegistry.getAllOrigins()) {
