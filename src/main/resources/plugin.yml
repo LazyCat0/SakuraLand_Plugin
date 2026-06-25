@@ -1,0 +1,8 @@
+name: SakuraLand
+version: '1.0-SNAP1'
+main: dev.lazycat.sakuraLand.SakuraLand
+api-version: '1.21'
+prefix: SKLand
+load: STARTUP
+authors: [ LazyCato0o ]
+description: features for sakuraland
