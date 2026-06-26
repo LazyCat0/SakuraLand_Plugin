@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface AiCoded {
     String by() default "unknown";
-    String id() default "";
-    String ai() default "";
+    String id() default "00000";
+    String ai() default "unknown";
 }

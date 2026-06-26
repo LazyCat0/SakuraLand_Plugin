@@ -41,6 +41,7 @@ public class OriginsCore {
         OriginsRegistry.register(new WardenOrigin("warden", "Варден"));
         OriginsRegistry.register(new EndermanOrigin("enderman", "Эндермен"));
         OriginsRegistry.register(new WitherOrigin("wither", "Чумной доктор", plugin));
+        OriginsRegistry.register(new VoidReaperOrigin("void_reaper", "Жнец пустоты", plugin));
     }
     /**
      * Активация эффектов рас

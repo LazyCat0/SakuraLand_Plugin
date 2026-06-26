@@ -6,10 +6,7 @@ import dev.lazycat.sakuraLand.someFeatures.AiCoded;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.entity.AreaEffectCloud;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.WitherSkeleton;
-import org.bukkit.entity.WitherSkull;
+import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -300,45 +297,73 @@ public class WitherOrigin extends Origin {
 
         for (int i = 0; i < 3; i++) {
 
-            Location spawn =
-                    player.getLocation()
-                            .clone()
-                            .add(
-                                    Math.random() * 3 - 1.5,
-                                    0,
-                                    Math.random() * 3 - 1.5
-                            );
-
-            WitherSkeleton skeleton =
-                    player.getWorld().spawn(
-                            spawn,
-                            WitherSkeleton.class
-                    );
-
-            skeleton.setCustomName(
-                    ChatColor.DARK_GRAY
-                            + "Малый Иссушитель"
+            Location spawn = player.getLocation().clone().add(
+                    Math.random() * 3 - 1.5,
+                    0,
+                    Math.random() * 3 - 1.5
             );
 
-            skeleton.getAttribute(
-                    Attribute.MAX_HEALTH
-            ).setBaseValue(12);
+            WitherSkeleton skeleton = player.getWorld().spawn(
+                    spawn,
+                    WitherSkeleton.class
+            );
 
-            skeleton.setHealth(12);
+            skeleton.setCustomName(ChatColor.DARK_GRAY + "Малый Иссушитель");
+            skeleton.setCustomNameVisible(false);
 
+            if (skeleton.getAttribute(Attribute.MAX_HEALTH) != null) {
+                skeleton.getAttribute(Attribute.MAX_HEALTH).setBaseValue(12.0);
+            }
+            skeleton.setHealth(12.0);
+
+            // Каждые 10 тиков обновляем цель
             new BukkitRunnable() {
-
                 @Override
                 public void run() {
 
-                    if (skeleton.isDead()) {
+                    if (!skeleton.isValid() || skeleton.isDead()) {
                         cancel();
                         return;
                     }
 
-                    skeleton.remove();
+                    LivingEntity target = null;
+                    double bestDistance = Double.MAX_VALUE;
+
+                    for (LivingEntity entity : skeleton.getLocation()
+                            .getNearbyLivingEntities(16)) {
+
+                        if (entity.equals(player))
+                            continue;
+
+                        // Не атаковать других призванных скелетов
+                        if (entity instanceof WitherSkeleton)
+                            continue;
+
+                        // Можно также игнорировать бронестойки и т.п.
+                        if (entity.isDead())
+                            continue;
+
+                        double distance = entity.getLocation()
+                                .distanceSquared(skeleton.getLocation());
+
+                        if (distance < bestDistance) {
+                            bestDistance = distance;
+                            target = entity;
+                        }
+                    }
+
+                    skeleton.setTarget(target);
                 }
-            }.runTaskLater(plugin, 400);
+            }.runTaskTimer(plugin, 0L, 10L);
+
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    if (skeleton.isValid()) {
+                        skeleton.remove();
+                    }
+                }
+            }.runTaskLater(plugin, 20L * 20L);
         }
 
         player.getWorld().playSound(
