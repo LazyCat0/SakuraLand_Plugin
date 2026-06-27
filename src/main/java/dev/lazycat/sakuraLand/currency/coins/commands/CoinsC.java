@@ -25,6 +25,9 @@ public class CoinsC {
         }
         @Override
         public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+            if (args.length < 3) {
+                return true;
+            }
             String action = args[0];
             String player = args[1];
             String value = args[2];

@@ -112,12 +112,12 @@ public class VoidReaperOrigin extends Origin {
     public void applyEffects(@NotNull Player player) {
         // Постоянное ночное зрение (обновляется каждые 2 секунды)
         if (!player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 40, 0, false, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, -1, 0, false, false, false));
         }
 
         // Постоянный голод I (для баланса)
         if (!player.hasPotionEffect(PotionEffectType.HUNGER)) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 40, 0, false, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, -1, 0, false, false, false));
         }
 
         // Обновляем бонусы от душ

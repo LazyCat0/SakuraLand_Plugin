@@ -3,10 +3,7 @@ package dev.lazycat.sakuraLand.origins.originsStorage;
 import dev.lazycat.sakuraLand.origins.Origin;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -79,8 +76,8 @@ public class EndermanOrigin extends Origin {
     }
 
     public void teleportToLookLocation(Player player) {
+        World world = player.getWorld();
         Block targetBlock = player.getTargetBlockExact(20);
-
         Location targetLocation;
         if (targetBlock == null) {
             targetLocation = player.getEyeLocation().add(player.getLocation().getDirection().multiply(20));
@@ -88,13 +85,46 @@ public class EndermanOrigin extends Origin {
             targetLocation = targetBlock.getLocation();
         }
 
-        targetLocation.add(0.5, 1.0, 0.5);
+        int x = targetLocation.getBlockX();
+        int z = targetLocation.getBlockZ();
 
-        targetLocation.setYaw(player.getLocation().getYaw());
-        targetLocation.setPitch(player.getLocation().getPitch());
+        int topY = -1;
+        for (int yTest = world.getMaxHeight(); yTest >= 0; yTest--) {
+            Block b = world.getBlockAt(x, yTest, z);
+            if (b.getType().isSolid() && !b.isLiquid()) {
+                topY = yTest;
+                break;
+            }
+        }
+
+        if (topY == -1) {
+            return;
+        }
+
+        Location finalLoc = new Location(world, x + 0.5, topY + 1.0, z + 0.5);
+        finalLoc.setYaw(player.getLocation().getYaw());
+        finalLoc.setPitch(player.getLocation().getPitch());
+
+        Block feetBlock = finalLoc.getBlock();
+        Block headBlock = finalLoc.clone().add(0, 1, 0).getBlock();
+        if (!feetBlock.getType().isAir() || !headBlock.getType().isAir()) {
+            boolean found = false;
+            for (int i = 1; i < 5; i++) {
+                Block checkFeet = finalLoc.clone().add(0, i, 0).getBlock();
+                Block checkHead = finalLoc.clone().add(0, i + 1, 0).getBlock();
+                if (checkFeet.getType().isAir() && checkHead.getType().isAir()) {
+                    finalLoc.add(0, i, 0);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return;
+            }
+        }
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
-        player.teleport(targetLocation);
+        player.teleport(finalLoc);
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.0f);
     }
 

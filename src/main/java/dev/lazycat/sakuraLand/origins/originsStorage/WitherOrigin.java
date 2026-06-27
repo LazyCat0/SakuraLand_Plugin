@@ -36,22 +36,15 @@ public class WitherOrigin extends Origin {
         super(id, displayName);
         this.plugin = plugin;
     }
-
-    @Override
-    public void onGetOrigin(Player player) {
-        player.addPotionEffect(
-                new PotionEffect(PotionEffectType.WITHER, 200, 0)
-        );
-
-        player.addPotionEffect(
-                new PotionEffect(PotionEffectType.STRENGTH, 300, 0)
-        );
-    }
-
     @Override
     public void applyEffects(Player player) {
         if (player.hasPotionEffect(PotionEffectType.WITHER)) {
             player.removePotionEffect(PotionEffectType.WITHER);
+        }
+        if (!player.hasPotionEffect(PotionEffectType.STRENGTH)) {
+            player.addPotionEffect(
+                    new PotionEffect(PotionEffectType.STRENGTH, -1, 0)
+            );
         }
     }
 

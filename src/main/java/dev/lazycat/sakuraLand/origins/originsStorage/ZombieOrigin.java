@@ -54,7 +54,7 @@ public class ZombieOrigin extends Origin  {
         if (!player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) {
             player.addPotionEffect(new PotionEffect(
                     PotionEffectType.NIGHT_VISION,
-                    200, 0, false, false, false
+                    -1, 0, false, false, false
             ));
         }
             for (Entity entity : player.getNearbyEntities(12, 4, 12)) {

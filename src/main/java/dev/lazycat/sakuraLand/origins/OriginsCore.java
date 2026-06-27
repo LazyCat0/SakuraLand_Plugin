@@ -32,7 +32,7 @@ public class OriginsCore {
     private void reg() {
         OriginsRegistry.register(new DefaultOrigin("default", "Человек", plugin));
         OriginsRegistry.register(new ChickenOrigin("chicken", "Авиан"));
-        OriginsRegistry.register(new FishOrigin("fish", "Рыбка"));
+        OriginsRegistry.register(new FishOrigin("fish", "Рыбка", plugin));
         OriginsRegistry.register(new CatOrigin("cat", "Кот", plugin));
         OriginsRegistry.register(new WitchOrigin("witch", "Ведьма"));
         OriginsRegistry.register(new IfritOrigin("ifrit", "Ифрит"));
@@ -54,24 +54,13 @@ public class OriginsCore {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Origin origin = getPlayerOrigin(player);
                     if (origin != null ) {
-                        if (origin != OriginsRegistry.get("fish") || origin != OriginsRegistry.get("zombie")) {
+                        if (origin != OriginsRegistry.get("fish") && origin != OriginsRegistry.get("zombie")) {
                             origin.applyEffects(player);
                         }
                     }
                 }
             }
         }.runTaskTimer(plugin, 0L, 20L);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    Origin origin = getPlayerOrigin(player);
-                    if (origin == OriginsRegistry.get("fish")) {
-                        origin.applyEffects(player);
-                    }
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 5L);
         new BukkitRunnable() {
             @Override
             public void run() {

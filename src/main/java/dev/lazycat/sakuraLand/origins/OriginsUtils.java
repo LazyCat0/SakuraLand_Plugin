@@ -30,10 +30,11 @@ public class OriginsUtils {
         }
         @Override
         public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String @NotNull [] args) {
-            String act = args[0];
-            String player = args[1];
-            String originId = args[2];
+            if (args.length == 0) {
+                return true;
+            }
 
+            String act = args[0].toLowerCase();
             switch (act) {
                 case "list" -> {
                     commandSender.sendMessage(mm.deserialize("<gray>============ [ <yellow>Список зарегистрированных рас</yellow> ] ============"));
@@ -58,6 +59,12 @@ public class OriginsUtils {
                     return true;
                 }
                 case "set" -> {
+                    if (args.length < 3) {
+                        return true;
+                    }
+                    String player = args[1];
+                    String originId = args[2];
+
                     Player player1 = Bukkit.getPlayer(player);
                     Origin origin = OriginsRegistry.get(originId);
                     if (player.isEmpty()) {
