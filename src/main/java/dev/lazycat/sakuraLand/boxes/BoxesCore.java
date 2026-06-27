@@ -26,6 +26,14 @@ public class BoxesCore {
     private final MiniMessage mm = MiniMessage.miniMessage();
     private OrbitAnimation animation;
 
+    private ItemDisplay defaultBoxEnt;
+    private ItemDisplay rareBoxEnt;
+    private ItemDisplay legendBoxEnt;
+    private ItemDisplay ultraBoxEnt;
+    private ItemDisplay neoBoxEnt;
+
+
+
     public BoxesCore(SakuraLand plugin) {
         this.plugin = plugin;
     }
@@ -34,31 +42,38 @@ public class BoxesCore {
     }
     public void idleAnim(Location location) {
         YamlConfiguration config = (YamlConfiguration) plugin.getConfig();
-        ItemDisplay defaultBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
+
+        defaultBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
             ent.setItemStack(createPlayerHead(config.getString("boxes.common.texture")));
             ent.setInterpolationDuration(20);
             ent.setInterpolationDelay(0);
+            ent.customName(mm.deserialize("common box"));
         });
-        ItemDisplay rareBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
+        rareBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
             ent.setItemStack(createPlayerHead(config.getString("boxes.rare.texture")));
             ent.setInterpolationDuration(20);
             ent.setInterpolationDelay(0);
+            ent.customName(mm.deserialize("<green>Rare box</green>"));
         });
-        ItemDisplay legendBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
+        legendBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
             ent.setItemStack(createPlayerHead(config.getString("boxes.legendary.texture")));
             ent.setInterpolationDuration(20);
             ent.setInterpolationDelay(0);
+            ent.customName(mm.deserialize("<red>Legendary box</red>"));
         });
-        ItemDisplay ultraBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
+        ultraBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
             ent.setItemStack(createPlayerHead(config.getString("boxes.ultra.texture")));
             ent.setInterpolationDuration(20);
             ent.setInterpolationDelay(0);
+            ent.customName(mm.deserialize("<black>Ultra Box</black>"));
         });
-        ItemDisplay neoBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
+        neoBoxEnt = location.getWorld().spawn(location, ItemDisplay.class, ent -> {
             ent.setItemStack(createPlayerHead(config.getString("boxes.neobox.texture")));
             ent.setInterpolationDuration(20);
             ent.setInterpolationDelay(0);
+            ent.customName(mm.deserialize("<gold>Neo Box</gold>"));
         });
+
 
         List<ItemDisplay> displays = List.of(
                 defaultBoxEnt,

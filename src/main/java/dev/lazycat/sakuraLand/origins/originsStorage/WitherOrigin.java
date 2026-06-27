@@ -10,6 +10,7 @@ import org.bukkit.entity.*;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -43,12 +44,6 @@ public class WitherOrigin extends Origin {
 
         player.addPotionEffect(
                 new PotionEffect(PotionEffectType.STRENGTH, 300, 0)
-        );
-
-        player.sendMessage(
-                MiniMessage.miniMessage().deserialize(
-                        "<dark_gray>☠ <gray>Вы стали <dark_red>Повелителем Болезней</dark_red>."
-                )
         );
     }
 
@@ -262,6 +257,7 @@ public class WitherOrigin extends Origin {
                             point,
                             1
                     );
+                    pushEntitiesAway(player, 1.2, 5);
                 }
 
                 timer--;
@@ -378,5 +374,27 @@ public class WitherOrigin extends Origin {
         return boneArmor.containsKey(
                 player.getUniqueId()
         );
+    }
+    private void pushEntitiesAway(Player player, double radius, double power) {
+        for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
+
+            if (entity instanceof LivingEntity && !entity.equals(player)) {
+
+                Location playerLoc = player.getLocation();
+                Location entityLoc = entity.getLocation();
+
+                Vector direction = entityLoc.toVector().subtract(playerLoc.toVector());
+
+                if (direction.lengthSquared() == 0) {
+                    direction = new Vector(1, 0, 0);
+                }
+
+                direction.normalize().multiply(power);
+
+                direction.setY(0.4);
+
+                entity.setVelocity(direction);
+            }
+        }
     }
 }

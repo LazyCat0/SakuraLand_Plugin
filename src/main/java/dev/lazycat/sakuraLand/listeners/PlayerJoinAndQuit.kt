@@ -6,11 +6,12 @@ import dev.lazycat.sakuraLand.currency.sparks.Sparks
 import dev.lazycat.sakuraLand.origins.Origin
 import dev.lazycat.sakuraLand.origins.OriginsCore
 import dev.lazycat.sakuraLand.origins.OriginsRegistry
+import dev.lazycat.sakuraLand.origins.OriginsUtils
 import dev.lazycat.sakuraLand.origins.pdct.OriginDataType
 import fr.mrmicky.fastboard.adventure.FastBoard
-import jdk.javadoc.internal.doclets.formats.html.markup.HtmlStyle
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -38,19 +39,14 @@ class PlayerJoinAndQuit(private val plugin: SakuraLand) : Listener {
 
         val pdc = player.persistentDataContainer
         val origin: Origin = pdc.get(OriginsCore.playerOrigin, OriginDataType.INSTANCE) ?: run {
-            val defaultOrigin = OriginsRegistry.get("default")
-            pdc.set(OriginsCore.playerOrigin, OriginDataType.INSTANCE, defaultOrigin)
-            defaultOrigin.onGetOrigin(player)
-            defaultOrigin
+            val randomOrigin = OriginsUtils.RandomOrigin.getRandomOrigin()
+            pdc.set(OriginsCore.playerOrigin, OriginDataType.INSTANCE, randomOrigin)
+            randomOrigin.onGetOrigin(player)
+            player.sendMessage(mm.deserialize("<gold>Вы впервые зашли. Ваша судьба - <origin>",
+                Placeholder.parsed("origin", randomOrigin.displayName)
+                ))
+            randomOrigin
         }
-
-        if (origin == null)
-            pdc.set(
-                OriginsCore.playerOrigin,
-                OriginDataType.INSTANCE,
-                OriginsRegistry.get("default")
-            )
-
 
     }
 

@@ -15,6 +15,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -54,6 +55,7 @@ public class OriginsUtils {
                     }
 
                     commandSender.sendMessage(mm.deserialize("<gray>==========================================================="));
+                    return true;
                 }
                 case "set" -> {
                     Player player1 = Bukkit.getPlayer(player);
@@ -64,6 +66,14 @@ public class OriginsUtils {
                     }
                     if (player1 == null) {
                         commandSender.sendMessage(mm.deserialize("<red>Игрок не найден."));
+                        return true;
+                    }
+                    if (originId.equals("random")) {
+                        Origin origin1 = RandomOrigin.getRandomOrigin();
+                        plugin.getOriginsCore().setPlayerOrigin(player1, origin1);
+                        commandSender.sendMessage(mm.deserialize("<gold>Была выдана <origin> игроку",
+                                Placeholder.parsed("origin", origin1.getDisplayName())
+                        ));
                         return true;
                     }
                     if (origin == null) {
@@ -80,9 +90,8 @@ public class OriginsUtils {
                     ));
                     return true;
                 }
-                default -> {return false;}
+                default -> {return true;}
             }
-            return true;
         }
     }
     public static class OriginCommandCompleter implements TabCompleter {
@@ -152,6 +161,53 @@ public class OriginsUtils {
                 factoryOrigin.abilityCExecute(player);
             }
             return true;
+        }
+    }
+    public static class RandomOrigin {
+        private static final Origin[] common = {OriginsRegistry.get("default"),
+                OriginsRegistry.get("chicken"),
+                OriginsRegistry.get("fish"),
+                OriginsRegistry.get("omnivore")
+
+        };
+        private static final Origin[] rare = {
+                OriginsRegistry.get("witch"),
+                OriginsRegistry.get("creeper"),
+                OriginsRegistry.get("enderman")
+        };
+        private static final Origin[] legendary = {
+                OriginsRegistry.get("warden"),
+                OriginsRegistry.get("zombie"),
+                OriginsRegistry.get("ifrit")
+        };
+        private static final Origin[] ultra = {
+                OriginsRegistry.get("void_reaper")
+        };
+        private static final Origin[] neo = {
+                OriginsRegistry.get("wither")
+        };
+
+        public static Origin getRandomOrigin() {
+            int chance = ThreadLocalRandom.current().nextInt(1, 101);
+            if (chance <= 1) {
+                return getRandomFromTarget(neo);
+            }
+            else if (chance <= 5) {
+                return getRandomFromTarget(ultra);
+            }
+            else if (chance <= 10) {
+                return getRandomFromTarget(legendary);
+            }
+            else if (chance <= 50) {
+                return getRandomFromTarget(rare);
+            }
+            else {
+                return getRandomFromTarget(common);
+            }
+        }
+        private static Origin getRandomFromTarget(Origin[] items) {
+            int index = ThreadLocalRandom.current().nextInt(items.length);
+            return items[index];
         }
     }
 }

@@ -42,6 +42,7 @@ public class OriginsCore {
         OriginsRegistry.register(new EndermanOrigin("enderman", "Эндермен"));
         OriginsRegistry.register(new WitherOrigin("wither", "Чумной доктор", plugin));
         OriginsRegistry.register(new VoidReaperOrigin("void_reaper", "Жнец пустоты", plugin));
+        OriginsRegistry.register(new ZombieOrigin("zombie", "Зомби", plugin));
     }
     /**
      * Активация эффектов рас
@@ -52,8 +53,10 @@ public class OriginsCore {
             public void run() {
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     Origin origin = getPlayerOrigin(player);
-                    if (origin != null) {
-                        origin.applyEffects(player);
+                    if (origin != null ) {
+                        if (origin != OriginsRegistry.get("fish") || origin != OriginsRegistry.get("zombie")) {
+                            origin.applyEffects(player);
+                        }
                     }
                 }
             }
@@ -69,6 +72,17 @@ public class OriginsCore {
                 }
             }
         }.runTaskTimer(plugin, 0L, 5L);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    Origin origin = getPlayerOrigin(player);
+                    if (origin == OriginsRegistry.get("zombie")) {
+                        origin.applyEffects(player);
+                    }
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 60L);
     }
 
     /**

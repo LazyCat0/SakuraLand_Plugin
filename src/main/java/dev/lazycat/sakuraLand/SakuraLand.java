@@ -15,6 +15,7 @@ import dev.lazycat.sakuraLand.origins.OriginsUtils;
 import dev.lazycat.sakuraLand.origins.originsListeners.IfritDamageEventListener;
 import dev.lazycat.sakuraLand.origins.originsListeners.VoidReaperListener;
 import dev.lazycat.sakuraLand.origins.originsListeners.WitherOriginListener;
+import dev.lazycat.sakuraLand.origins.originsListeners.ZombieOriginListener;
 import dev.lazycat.sakuraLand.someFeatures.Sidebars;
 import fr.mrmicky.fastboard.adventure.FastBoard;
 import org.bukkit.Bukkit;
@@ -48,6 +49,7 @@ public class SakuraLand extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new IfritDamageEventListener(this), this);
         getServer().getPluginManager().registerEvents(new WitherOriginListener(), this);
         getServer().getPluginManager().registerEvents(new VoidReaperListener(), this);
+        getServer().getPluginManager().registerEvents(new ZombieOriginListener(), this);
 
         this.initCommands();
 
