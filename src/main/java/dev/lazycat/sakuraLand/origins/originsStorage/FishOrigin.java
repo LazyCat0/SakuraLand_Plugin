@@ -23,8 +23,8 @@ public class FishOrigin extends Origin {
 
     public FishOrigin(String id, String displayName, SakuraLand plugin) {
         super(id, displayName);
-        startOxygenTask();
         this.plugin = plugin;
+        startOxygenTask();
     }
 
     private void startOxygenTask() {

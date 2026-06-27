@@ -20,7 +20,7 @@ public class ChickenOrigin extends Origin {
     }
 
     private final HashMap<UUID, Long> cooldowns = new HashMap<>();
-    private final long cooldownTime = 2000;
+    private final long cooldownTime = 4 * 1000;
 
     private MiniMessage mm = MiniMessage.miniMessage();
 
@@ -42,7 +42,7 @@ public class ChickenOrigin extends Origin {
         }
         player.swingMainHand();
         player.playSound(player, Sound.ENTITY_CHICKEN_AMBIENT, 1.0f, 1.0f);
-        Vector pushUp = player.getLocation().getDirection().multiply(0.5).setY(0.8);
+        Vector pushUp = player.getLocation().getDirection().multiply(1.2).setY(0.8);
 
         player.setVelocity(pushUp);
 
