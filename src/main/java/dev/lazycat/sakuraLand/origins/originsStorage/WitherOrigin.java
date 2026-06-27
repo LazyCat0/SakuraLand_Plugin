@@ -4,6 +4,7 @@ import dev.lazycat.sakuraLand.SakuraLand;
 import dev.lazycat.sakuraLand.origins.Origin;
 import dev.lazycat.sakuraLand.someFeatures.AiCoded;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
@@ -15,8 +16,7 @@ import org.bukkit.util.Vector;
 import java.util.HashMap;
 import java.util.UUID;
 
-
-@AiCoded(by="@Kliker38", id = "5041138307", ai = "chatGpt")
+@AiCoded(by = "@Kliker38", id = "5041138307", ai = "chatGpt")
 public class WitherOrigin extends Origin {
 
     private final HashMap<UUID, Long> zCooldown = new HashMap<>();
@@ -26,12 +26,13 @@ public class WitherOrigin extends Origin {
     private final HashMap<UUID, Integer> boneArmor = new HashMap<>();
 
     private final SakuraLand plugin;
+    private final MiniMessage mm = MiniMessage.miniMessage();
 
     private static final long Z_CD = 50;
     private static final long X_CD = 30;
     private static final long C_CD = 120;
 
-    public WitherOrigin(String id, String displayName ,SakuraLand plugin) {
+    public WitherOrigin(String id, String displayName, SakuraLand plugin) {
         super(id, displayName);
         this.plugin = plugin;
     }
@@ -56,21 +57,17 @@ public class WitherOrigin extends Origin {
 
     @Override
     public void abilityZExecute(Player player) {
-
         long current = System.currentTimeMillis();
 
         if (zCooldown.containsKey(player.getUniqueId())) {
             long last = zCooldown.get(player.getUniqueId());
 
             if ((current - last) < Z_CD * 1000) {
-
-                long remain =
-                        Z_CD - ((current - last) / 1000);
-
+                long secondsLeft = Z_CD - ((current - last) / 1000);
                 player.sendActionBar(
-                        MiniMessage.miniMessage().deserialize(
-                                "<red>Способность будет готова через "
-                                        + remain + " сек."
+                        mm.deserialize(
+                                "<red>Способность 1 на перезарядке - <white><sec></white> секунд",
+                                Placeholder.parsed("sec", String.valueOf(secondsLeft))
                         )
                 );
                 return;
@@ -95,12 +92,9 @@ public class WitherOrigin extends Origin {
         );
 
         new BukkitRunnable() {
-
             @Override
             public void run() {
-
                 if (skull.isDead() || skull.isOnGround()) {
-
                     Location loc = skull.getLocation();
 
                     loc.getWorld().spawnParticle(
@@ -131,46 +125,26 @@ public class WitherOrigin extends Origin {
                     cloud.setParticle(Particle.ASH);
 
                     new BukkitRunnable() {
-
                         int ticks = 160;
 
                         @Override
                         public void run() {
-
                             if (ticks <= 0 || cloud.isDead()) {
                                 cancel();
                                 return;
                             }
 
-                            for (Player nearby :
-                                    Bukkit.getOnlinePlayers()) {
-
-                                if (nearby.equals(player))
-                                    continue;
-
-                                if (!nearby.getWorld().equals(
-                                        cloud.getWorld()))
-                                    continue;
-
-                                if (nearby.getLocation()
-                                        .distance(
-                                                cloud.getLocation())
-                                        <= 4) {
-
-                                    nearby.damage(
-                                            2.0,
-                                            player
-                                    );
+                            for (Player nearby : Bukkit.getOnlinePlayers()) {
+                                if (nearby.equals(player)) continue;
+                                if (!nearby.getWorld().equals(cloud.getWorld())) continue;
+                                if (nearby.getLocation().distance(cloud.getLocation()) <= 4) {
+                                    nearby.damage(2.0, player);
                                 }
                             }
 
                             ticks -= 20;
                         }
-                    }.runTaskTimer(
-                            plugin,
-                            0,
-                            20
-                    );
+                    }.runTaskTimer(plugin, 0, 20);
 
                     cancel();
                 }
@@ -180,22 +154,17 @@ public class WitherOrigin extends Origin {
 
     @Override
     public void abilityXExecute(Player player) {
-
         long current = System.currentTimeMillis();
 
         if (xCooldown.containsKey(player.getUniqueId())) {
-
             long last = xCooldown.get(player.getUniqueId());
 
             if ((current - last) < X_CD * 1000) {
-
-                long remain =
-                        X_CD - ((current - last) / 1000);
-
+                long secondsLeft = X_CD - ((current - last) / 1000);
                 player.sendActionBar(
-                        MiniMessage.miniMessage().deserialize(
-                                "<red>Способность будет готова через "
-                                        + remain + " сек."
+                        mm.deserialize(
+                                "<red>Способность 2 на перезарядке - <white><sec></white> секунд",
+                                Placeholder.parsed("sec", String.valueOf(secondsLeft))
                         )
                 );
                 return;
@@ -214,43 +183,31 @@ public class WitherOrigin extends Origin {
         );
 
         player.sendMessage(
-                MiniMessage.miniMessage().deserialize(
+                mm.deserialize(
                         "<gray>Вас окружили <white>3 костяных щита</white>."
                 )
         );
 
         new BukkitRunnable() {
-
             int timer = 200;
 
             @Override
             public void run() {
-
-                if (timer <= 0
-                        || !player.isOnline()) {
-
-                    boneArmor.remove(
-                            player.getUniqueId()
-                    );
+                if (timer <= 0 || !player.isOnline()) {
+                    boneArmor.remove(player.getUniqueId());
                     cancel();
                     return;
                 }
 
-                Location loc =
-                        player.getLocation();
+                Location loc = player.getLocation();
 
                 for (int i = 0; i < 3; i++) {
-
-                    double angle =
-                            (Math.PI * 2 / 3 * i)
-                                    + (timer / 10D);
-
-                    Location point =
-                            loc.clone().add(
-                                    Math.cos(angle),
-                                    1.2,
-                                    Math.sin(angle)
-                            );
+                    double angle = (Math.PI * 2 / 3 * i) + (timer / 10D);
+                    Location point = loc.clone().add(
+                            Math.cos(angle),
+                            1.2,
+                            Math.sin(angle)
+                    );
 
                     player.getWorld().spawnParticle(
                             Particle.SOUL_FIRE_FLAME,
@@ -267,22 +224,17 @@ public class WitherOrigin extends Origin {
 
     @Override
     public void abilityCExecute(Player player) {
-
         long current = System.currentTimeMillis();
 
         if (cCooldown.containsKey(player.getUniqueId())) {
-
             long last = cCooldown.get(player.getUniqueId());
 
             if ((current - last) < C_CD * 1000) {
-
-                long remain =
-                        C_CD - ((current - last) / 1000);
-
+                long secondsLeft = C_CD - ((current - last) / 1000);
                 player.sendActionBar(
-                        MiniMessage.miniMessage().deserialize(
-                                "<red>Способность будет готова через "
-                                        + remain + " сек."
+                        mm.deserialize(
+                                "<red>Способность 3 на перезарядке - <white><sec></white> секунд",
+                                Placeholder.parsed("sec", String.valueOf(secondsLeft))
                         )
                 );
                 return;
@@ -292,7 +244,6 @@ public class WitherOrigin extends Origin {
         cCooldown.put(player.getUniqueId(), current);
 
         for (int i = 0; i < 3; i++) {
-
             Location spawn = player.getLocation().clone().add(
                     Math.random() * 3 - 1.5,
                     0,
@@ -312,11 +263,9 @@ public class WitherOrigin extends Origin {
             }
             skeleton.setHealth(12.0);
 
-            // Каждые 10 тиков обновляем цель
             new BukkitRunnable() {
                 @Override
                 public void run() {
-
                     if (!skeleton.isValid() || skeleton.isDead()) {
                         cancel();
                         return;
@@ -327,17 +276,9 @@ public class WitherOrigin extends Origin {
 
                     for (LivingEntity entity : skeleton.getLocation()
                             .getNearbyLivingEntities(16)) {
-
-                        if (entity.equals(player))
-                            continue;
-
-                        // Не атаковать других призванных скелетов
-                        if (entity instanceof WitherSkeleton)
-                            continue;
-
-                        // Можно также игнорировать бронестойки и т.п.
-                        if (entity.isDead())
-                            continue;
+                        if (entity.equals(player)) continue;
+                        if (entity instanceof WitherSkeleton) continue;
+                        if (entity.isDead()) continue;
 
                         double distance = entity.getLocation()
                                 .distanceSquared(skeleton.getLocation());
@@ -371,15 +312,12 @@ public class WitherOrigin extends Origin {
     }
 
     public boolean hasBoneArmor(Player player) {
-        return boneArmor.containsKey(
-                player.getUniqueId()
-        );
+        return boneArmor.containsKey(player.getUniqueId());
     }
+
     private void pushEntitiesAway(Player player, double radius, double power) {
         for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
-
             if (entity instanceof LivingEntity && !entity.equals(player)) {
-
                 Location playerLoc = player.getLocation();
                 Location entityLoc = entity.getLocation();
 
@@ -390,9 +328,7 @@ public class WitherOrigin extends Origin {
                 }
 
                 direction.normalize().multiply(power);
-
                 direction.setY(0.4);
-
                 entity.setVelocity(direction);
             }
         }

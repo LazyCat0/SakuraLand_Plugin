@@ -32,7 +32,7 @@ public class Sidebars {
 
         board.updateLines(
                 Component.text(""),
-                mm.deserialize("<white>Добро пожаловать, <gold><p><gold>!</white>", Placeholder.parsed("p", player.getName())),
+                mm.deserialize("<white>Приветствуем, <gold><p><gold>!</white>", Placeholder.parsed("p", player.getName())),
                 mm.deserialize("<white>Ваш ранг - <rank>", Placeholder.parsed("rank", "ВЗЗ")),
                 mm.deserialize("<white>У вас <gold><value> искорок</gold>", Placeholder.component("value", Component.text(plugin.getSparksInstance().get(player)))),
                 mm.deserialize("<white>У вас <gold><value>/<coins_limit> монет</gold>",
@@ -45,7 +45,8 @@ public class Sidebars {
                 mm.deserialize("<gray>Онлайн сервера - <o>", Placeholder.component("o", Component.text(Bukkit.getOnlinePlayers().size()))),
                 mm.deserialize("<gray>Ваша судьба - <o>", Placeholder.parsed("o", origin.getDisplayName())),
                 Component.text(""),
-                Component.text("server-ip").color(NamedTextColor.YELLOW)
+                mm.deserialize("<gold><ip></gold>",
+                        Placeholder.parsed("ip", plugin.getServer().getIp()))
         );
     }
 }
